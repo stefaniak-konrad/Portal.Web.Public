@@ -1,0 +1,45 @@
+﻿@model IList<EO.Serwis.Portal.ServiceLayer.DTO.WycenaListItemDTO>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="container" class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 box accordion">
+            <div class="box-header">
+                <div class="box-title">Lista zgłoszeń</div>
+                <div class="box-accordion-button"></div>
+            </div>
+            <div class="box-container">
+                <div class="container new-section">
+                    <table class="table table-bordered application-list">
+                        <thead>
+                            <tr class="info">
+                                <th class="text-center">ID Zgłoszenia</th>
+                                <th class="text-center">ID Wyceny</th>
+                                <th class="text-center">Opis</th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="panel-body">
+                            @foreach (var client in Model)
+                            {
+                                <tr>
+                                    <td>@client.IdZgloszenia</td>
+                                    <td>@client.IdWyceny</td>
+                                    <td>@client.Opis</td>
+                                    <td>@Html.ActionLink("Szczegóły", "Index", "Payments", new { id = client.UrlWyceny })</td>
+                                    <td><a asp-action="Index" asp-controller="Account" asp-route-id="@client.IdZgloszenia">Zmień dane</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
