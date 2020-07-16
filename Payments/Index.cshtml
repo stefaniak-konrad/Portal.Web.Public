@@ -1,0 +1,657 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model PaymentsModel
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "AkceptacjaForm" }))
+{
+    @Html.HiddenFor(model => model.IdWyceny)
+    @Html.HiddenFor(model => model.UrlWyceny)
+    @Html.HiddenFor(model => model.UserId)
+    @Html.HiddenFor(model => model.IdZgloszenia)
+    @Html.HiddenFor(model => model.zgloszenie.WyborRealizatora)
+    <div id="container" class="container-fluid">
+        <div class="row">
+            @*<div class="col-md-4 text-left">*@
+            <div class="col-xl-4 col-lg-5 box accordion"> 
+                <div class="box-header">
+                    <div class="box-title">Zgłoszenia</div>
+                    <div class="box-accordion-button"></div>
+                </div>
+                <div class="box-container">
+                    @if (Model.CanEdit == false && Model.Platnosc != null)
+                    {
+                        <div class="container new-section">
+                            <div class="box-data-title"><span>Płatność</span></div>
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Identyfikator płatności:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(m => m.Platnosc.Id)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Tytuł przelewu:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.P24Statement)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Identyfikator sesji:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.P24SessionId)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Opis transakcji:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.P24Description)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Kwota transakcji:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Model.Platnosc.P24Amount.Value.ToString().Insert(@Model.Platnosc.P24Amount.Value.ToString().Length - 2, ",") zł
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Waluta:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.P24Currency)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Data i godzina transakcji:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.DataRejestracji)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Numer faktury zaliczkowej:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.NumerFakturyZal)
+                                </div>
+                            </div>
+
+                            <div class="row data">
+                                <div class="col-xl-5 col-lg-6 col-sm-5 label">Numer faktury końcowej:</div>
+                                <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                    @Html.DisplayTextFor(model => model.Platnosc.NumerFaktury)
+                                </div>
+                            </div>
+                        </div>
+                    }
+                <div class="container new-section">
+                    <div class="box-data-title"><span>Dane zgłoszenia</span></div>
+                    <div class="row data">
+                        <div class="col-xl-5 col-lg-6 col-sm-5 label">Identyfikator zgłoszenia:</div>
+                        <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                            @Html.DisplayTextFor(model => model.IdZgloszenia)
+                        </div>
+                    </div>
+                    <div class="row data">
+                        <div class="col-xl-5 col-lg-6 col-sm-5 label">Data rejestracji:</div>
+                        <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                            @Html.DisplayTextFor(model => model.DataRejestracji)
+                        </div>
+                    </div>
+                    <div class="row data">
+                        <div class="col-xl-5 col-lg-6 col-sm-5 label">Status wyceny:</div>
+                        <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                            @Html.DisplayTextFor(model => model.StatusWyceny)
+                        </div>
+                    </div>
+                </div>
+                    <div class="container new-section">
+                        <div class="box-data-title"><span>Zgłaszający</span><a asp-action="Index" asp-controller="Account" asp-route-id="@Model.IdZgloszenia"><span class="edit-button"></span></a></div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Nazwa:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @string.Join(" ", Model.Name, Model.Lastname)
+                            </div>
+                        </div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Adres:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @string.Join(" ", Model.Adres, Model.PostCode, Model.City)
+                            </div>
+                        </div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Email:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @Html.DisplayTextFor(model => model.Email)
+                            </div>
+                        </div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">NIP:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @Html.DisplayTextFor(model => model.NIP)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container new-section">
+                        <div class="box-data-title"><span>Naprawiany sprzęt</span></div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Producent:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @Html.DisplayTextFor(model => model.Producent)
+                            </div>
+                        </div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Model:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @Html.DisplayTextFor(model => model.Model)
+                            </div>
+                        </div>
+                        <div class="row data">
+                            <div class="col-xl-5 col-lg-6 col-sm-5 label">Numer seryjny:</div>
+                            <div class="col-xl-7 col-lg-6 col-sm-7 value">
+                                @Html.DisplayTextFor(model => model.SerialNo)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container new-section">
+                        <div class="box-data-title"><span>Opis usterki</span></div>
+                        <div class="row data">
+                            <div class="col-xs-12 value">
+                                @Html.DisplayTextFor(model => model.OpisUsterki)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xl-8 col-lg-7 box accordion">
+                <div class="box-header">
+                    <div class="box-title">Wycena naprawy</div>
+                    <div class="box-accordion-button"></div>
+                </div>
+                <div class="box-container">
+                    <div class="container new-section">
+                        <table class="table table-bordered evaluation-list">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Opis</th>
+                                    <th>Jedn.</th>
+                                    <th>Ilość</th>
+                                    <th>Cena</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var modele in Model.PozycjeWyceny)
+                                {
+                                    <tr>
+                                        <td class="td-1">01</td>
+                                        <td class="td-2">
+                                            @(modele.Usluga ? "Usługa" : "Części")
+                                            @String.Join(" ", modele.NazwaProducenta@*, modele.Model, modele.SerialNo*@)
+                                        </td>
+                                        <td class="td-3">Szt.</td>
+                                        <td class="td-4">@modele.Liczba</td>
+                                        <td class="td-5">@modele.SumaBrutto.Value.ToString("C")</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="table-summary-begin" colspan="2"></td>
+                                    <td class="table-summary-middle" colspan="2">Łączna kwota (w tym VAT)</td>
+                                    <td class="table-summary-end"><span>@Html.DisplayTextFor(m => m.Cena)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (Model.CanEdit)
+                    {
+                        <div class="container new-section">
+                            <div class="widget">
+                                <fieldset>
+                                    <label name="AkceptacjaRegulaminuL" id="AkceptacjaRegulaminuL" class="ui-checkboxradio-label ui-corner-all ui-button ui-widget" for="AkceptacjaRegulaminu">
+                                        Oświadczam, że znam i akceptuje postanowienia <a data-toggle="modal" data-target="#myModal">Regulaminu</a> Centrum Serwisowego oraz zapoznałem się z Polityką Prywatności (RODO)
+                                    </label>
+                                    @Html.CheckBoxFor(model => model.AkceptacjaRegulaminu, new { id = "AkceptacjaRegulaminu", name = "AkceptacjaRegulaminu" })
+                                    <span class="glyphicon glyphicon-warning-sign hidden" id="agreementExclamation" title="Wymagana jest akceptacja regulaminu!"></span>
+                                    <label for="fv">
+                                        Faktura VAT
+                                    </label>
+                                    @Html.CheckBoxFor(model => model.FakturaVat, new { id = "fv" })
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog modal-lg">
+
+                                <!-- Modal content-->
+                                <div class="modal-content overflow-auto">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title">Regulamin serwisu</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body" style="overflow-y:scroll; height:510px">
+                                        @await Component.InvokeAsync("Regulamin")
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="~/attachments/EO.Odstapienie.docx" download>
+                                            <b src="~/attachments/EO.Odstapienie.docx">Formularz odstąpienia od umowy</b>
+                                        </a>
+                                        @*<a href="~/attachments/WzorFormularza.docx" download>
+                                                <b src="~/attachments/WzorFormularza.docx">Wzór formularza</b>
+                                            </a>*@
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div id="invoice-data" class="container new-section columns">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaNazwa">Nazwa</label>
+                                    @Html.TextBoxFor(m => m.FakturaNazwa, new { id = "FakturaNazwa"})
+                                    <span class="hidden" style="color:red !important;">Nazwa jest wymagana do wystawienia faktury VAT</span>
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-last">
+                                    <label for="FakturaNip">NIP</label>
+                                    @Html.TextBoxFor(m => m.FakturaNip, new { id = "FakturaNip", @maxlength = "10", onkeypress="return isNumberKey(event)"})
+                                    <span class="hidden" style="color:red !important;">Numer NIP jest wymagany do wystawienia faktury VAT</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaUlica">Ulica</label>
+                                    @Html.TextBoxFor(m => m.FakturaUlica, new { id = "FakturaUlica" })
+                                    <span class="hidden" style="color:red !important;">Adres jest wymagany do wystawienia faktury VAT</span>
+                                </div>
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaNrBudynku">Nr budynku</label>
+                                    @Html.TextBoxFor(m => m.FakturaNrBudynku, new { id = "FakturaNrBudynku" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaNrLokalu">Nr lokalu</label>
+                                    @Html.TextBoxFor(m => m.FakturaNrLokalu, new { @id = "FakturaNrLokalu" })
+                                </div>
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaKodPocztowy">Kod pocztowy</label>
+                                    @Html.TextBoxFor(m => m.FakturaKodPocztowy, new { id = "FakturaKodPocztowy", @maxlength = "6", onkeypress="return Validate(event);" })
+                                    <span class="hidden" style="color:red !important;">Kod pocztowy jest wymagany do wystawienia faktury VAT</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col">
+                                    <label for="FakturaMiasto">Miasto</label>
+                                    @Html.TextBoxFor(m => m.FakturaMiasto, new { id = "FakturaMiasto" })
+                                    <span class="hidden" style="color:red !important;">Miasto jest wymagane do wystawienia faktury VAT</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="container new-section columns">
+                            <div class="row">
+                                <div class="col-xl-6 col-md-0 col-sm-0"></div>
+                                <div class="col-xl-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="button red" id="cancelBtn" onclick="javascript: rejectForm();"><span class="icon"></span><span style="margin-left:35px; margin-top:4px">Rezygnuję</span></div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="button green" id="myBtn" onclick="javascript: akceptForm();"><span class="icon"></span><span style="margin-left:35px; margin-top:4px">Zgadzam się</span></div>
+                                </div>
+                                <div class="col-xl-9 col-md-0 col-sm-0"></div>
+                                <div id="gusTxt">Pobieranie danych z GUS</div>
+                                <div id="gusWaiter" class="lds-spinner" style="margin-top:-20px"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                            </div>
+                        </div>
+                        @*<div id="uwagaModal" class="modal " role="dialog">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content overflow-auto">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title">Potwierdzenie</h4>
+                                        <button type="button" class="close" id="closeModal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Czy na pewno chcesz dokonac platnosci?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="button green" onclick="javascript: akceptForm();"><span class="icon"></span>Tak</button>
+                                        <button type="button" class="button red" id="nieBtn"><span class="icon"></span>Nie</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                     }
+                </div>
+            </div>
+        </div>
+    </div>
+
+ }
+<scrypt type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.js"></scrypt>
+    <script type="text/javascript">
+
+        document.getElementById('gusTxt').style.visibility = "hidden";
+                            document.getElementById('gusWaiter').style.visibility = "hidden";
+
+        function isNumberKey(evt){   //blokada wpisywania liter w #FakturaNip
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
+        function Validate(event) {
+        var regex = new RegExp("^[0-9-!#$%*?]");
+        var key = String.fromCharCode(event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    }       
+  
+
+        function invoice() {
+            if ($("#fv:checked").length > 0) {
+                $("#invoice-data").removeClass("hidden");
+            } else {
+                $("#invoice-data").addClass("hidden");
+            }
+        };
+        $(function () {
+            $("#fv[type=checkbox]").on("click", invoice);
+            invoice();
+        });
+
+
+        $('#fv').change(function () {
+            $("#invoicePanel").prop("hidden", !this.checked);
+        });
+
+        $('#AkceptacjaRegulaminu').click(function () {
+            $('#agreementValidationMessage').prop('hidden', this.checked);
+            //$('#agreementExclamation').prop('hidden', this.checked);
+            $('#AkceptacjaRegulaminuL').toggleClass('requiredValidation', !this.checked);
+            $('#agreementExclamation').toggleClass('hidden', this.checked);
+        });
+
+        function akceptForm() {
+            var isValid = true;
+            //$("#AkceptacjaForm").attr("action", "Cancellation");
+            if ($('#AkceptacjaRegulaminu').is(':checked') == false) {
+                $('#agreementValidationMessage').prop('hidden', false);
+                $('#agreementExclamation').toggleClass('hidden', false);
+                $('#AkceptacjaRegulaminuL').toggleClass('requiredValidation', true);
+                alert("W celu dalszego procesowania zgłoszenie wymagana jest akceptacja regulaminu!");
+                isValid = false;
+            }
+            //if ($('#fv').is(':checked') = false) {
+            //    document.getElementById('myBtn').style.visibility = "visible";
+            //    document.getElementById('cancelBtn').style.visibility = "visible";
+            //}
+            if ($('#fv').is(':checked')) {
+                if ($('#FakturaNazwa').val() == "") {
+                    $('#FakturaNazwa').toggleClass("requiredValidationInput", true);
+                    $('#FakturaNazwa').next("span").toggleClass("hidden", false);
+                    //$(element).nextAll('.form-control-feedback').show().removeClass('glyphicon-ok').addClass('glyphicon-remove');
+                    isValid = false;
+                }
+                if ($('#FakturaNip').val() == "") {
+                    $('#FakturaNip').toggleClass("requiredValidationInput", true);
+                    $('#FakturaNip').next("span").toggleClass("hidden", false);
+                    //$(element).nextAll('.form-control-feedback').show().removeClass('glyphicon-ok').addClass('glyphicon-remove');
+                    isValid = false;
+                }
+                if ($('#FakturaUlica').val() == "") {
+                    $('#FakturaUlica').toggleClass("requiredValidationInput", true);
+                    $('#FakturaUlica').next("span").toggleClass("hidden", false);
+                    //$(element).nextAll('.form-control-feedback').show().removeClass('glyphicon-ok').addClass('glyphicon-remove');
+                    isValid = false;
+                }
+                if ($('#FakturaKodPocztowy').val() == "") {
+                    $('#FakturaKodPocztowy').toggleClass("requiredValidationInput", true);
+                    $('#FakturaKodPocztowy').next("span").toggleClass("hidden", false);
+                    //$(element).nextAll('.form-control-feedback').show().removeClass('glyphicon-ok').addClass('glyphicon-remove');
+                    isValid = false;
+                }
+                if ($('#FakturaMiasto').val() == "") {
+                    $('#FakturaMiasto').toggleClass("requiredValidationInput", true);
+                    $('#FakturaMiasto').next("span").toggleClass("hidden", false);
+                    //$(element).nextAll('.form-control-feedback').show().removeClass('glyphicon-ok').addClass('glyphicon-remove');
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                if ($('#fv').is(':checked') == false) {
+                    sessionStorage.clear();
+                }
+                if (sessionStorage.getItem("nip_checked") == null) {
+                    alert('Nip niesprawdzony!')
+                }
+                var nip = sessionStorage.getItem("nip_valid");
+                if (nip) {
+                    alert(nip);
+                    return;
+                }
+                $('#AkceptacjaForm').attr("action", "/Payments/Register");
+                $('#AkceptacjaForm').submit();
+            }
+        };
+
+        $('#FakturaNazwa').change(function () {
+            if ($(this).val() == "") {
+                $(this).toggleClass("requiredValidationInput", true);
+                $(this).next("span").toggleClass("hidden", false);
+            }
+            else {
+                $(this).toggleClass("requiredValidationInput", false);
+                $(this).next("span").toggleClass("hidden", true);
+            }
+        });
+
+        $('#FakturaNip').change(function () {
+            if ($(this).val() == "") {
+                $(this).toggleClass("requiredValidationInput", true);
+                $(this).next("span").toggleClass("hidden", false);
+                
+            }
+            //if ($(this).val().length < 10) {
+            //    document.getElementById('myBtn').style.visibility = "hidden";
+            //    document.getElementById('cancelBtn').style.visibility = "hidden";
+            //}
+            if ($(this).val().length != 10) {
+                sessionStorage.setItem("nip_valid", "Podany NIP jest zbyt krótki");
+                sessionStorage.setItem("nip_checked", true);
+            }
+
+            if ($(this).val().length == 10) {//autouzupełnianie
+                document.getElementById('myBtn').style.visibility = "hidden";
+                document.getElementById('cancelBtn').style.visibility = "hidden";
+
+                document.getElementById('gusTxt').style.visibility = "visible";
+                document.getElementById('gusWaiter').style.visibility = "visible";
+                var JSONData = $('#FakturaNip').val(); 
+                $.ajax({
+                    type: "POST",
+                    url: "api/nip",
+                    dataType: "json",
+                    data: { value : JSONData },
+                    success: function (data) {
+                        if (data['status'] == "ok") {
+                            //alert(data['msg']);
+                            $('#FakturaNazwa').val(data['nazwa']) ;
+                            $('#FakturaUlica').val(data['ulica']);
+                            $('#FakturaKodPocztowy').val(data['kodPocztowy']);
+                            $('#FakturaMiasto').val(data['miasto']);
+                            $('#FakturaNrBudynku').val(data['nrBudynku']);
+                            document.getElementById('gusTxt').style.visibility = "hidden";
+                            document.getElementById('gusWaiter').style.visibility = "hidden";
+
+                            document.getElementById('myBtn').style.visibility = "visible";
+                            document.getElementById('cancelBtn').style.visibility = "visible";
+
+                            sessionStorage.clear();
+                            sessionStorage.setItem("nip_checked", true);
+                        }
+                        if (data['status'] == 'error') {
+                            sessionStorage.setItem("nip_valid", "Podany nip nie został odnaleziony w bazie GUS");
+                            sessionStorage.setItem("nip_checked", true);
+
+                            document.getElementById('gusTxt').style.visibility = "hidden";
+                            document.getElementById('gusWaiter').style.visibility = "hidden";
+
+                            document.getElementById('myBtn').style.visibility = "visible";
+                            document.getElementById('cancelBtn').style.visibility = "visible";
+                        }
+                        else {
+                            document.getElementById('gusTxt').style.visibility = "hidden";
+                            document.getElementById('gusWaiter').style.visibility = "hidden";
+
+                            document.getElementById('myBtn').style.visibility = "visible";
+                            document.getElementById('cancelBtn').style.visibility = "visible";
+                            //alert(data['msgError']);
+                        }
+                    },
+                    error: function () {
+                        //alert("something went wrong");
+                    }
+                });
+            }
+            else {
+                $(this).toggleClass("requiredValidationInput", false);
+                $(this).next("span").toggleClass("hidden", true);
+            }                                                
+        });
+
+        $('#FakturaUlica').change(function () {
+            if ($(this).val() == "") {
+                $(this).toggleClass("requiredValidationInput", true);
+                $(this).next("span").toggleClass("hidden", false);
+            }
+            else {
+                $(this).toggleClass("requiredValidationInput", false);
+                $(this).next("span").toggleClass("hidden", true);
+            }
+        });
+
+        $('#FakturaKodPocztowy').change(function () {
+            if ($(this).val() == "") {
+                $(this).toggleClass("requiredValidationInput", true);
+                $(this).next("span").toggleClass("hidden", false);
+            }
+            else {
+                $(this).toggleClass("requiredValidationInput", false);
+                $(this).next("span").toggleClass("hidden", true);
+            }
+        });
+
+        $('#FakturaMiasto').change(function () {
+            if ($(this).val() == "") {
+                $(this).toggleClass("requiredValidationInput", true);
+                $(this).next("span").toggleClass("hidden", false);
+            }
+            else {
+                $(this).toggleClass("requiredValidationInput", false);
+                $(this).next("span").toggleClass("hidden", true);
+            }
+        });
+
+        function rejectForm() {
+            //$("#AkceptacjaForm").attr("action", "Cancellation");
+            //if (!this.AkceptacjaRegulaminu.checked) {
+            //    alert("Please indicate that you accept the Terms and Conditions");
+            //    this.terms.focus();
+            //    e.preventDefault(); // equivalent to return false
+            //    return;
+            //}
+            //else
+            //{
+            $('#AkceptacjaForm').attr("action", "/Payments/Cancellation");
+            $('#AkceptacjaForm').submit();
+            //}
+        };
+
+        $(document).on('click', '.panel-heading span.clickable', function (e) {
+            var $this = $(this);
+            if (!$this.hasClass('panel-collapsed')) {
+                $this.parents('.panel').find('.panel-body').slideUp();
+                $this.addClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            } else {
+                $this.parents('.panel').find('.panel-body').slideDown();
+                $this.removeClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $(document).on('click', '.panel div.clickable', function (e) {
+            var $this = $(this);
+            if (!$this.hasClass('panel-collapsed')) {
+                $this.parents('.panel').find('.panel-body').slideUp();
+                $this.addClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            } else {
+                $this.parents('.panel').find('.panel-body').slideDown();
+                $this.removeClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        //$(document).ready(function () {
+        //    $('.panel-heading span.clickable').click();
+        //    $('.panel div.clickable').click();
+        //});
+
+        $('#myModal').on('show', function () {
+            var link = $(this).data('link'),
+                agreeBtn = $(this).find('.agree');
+        })
+
+        $('.confirm-link').on('click', function (e) {
+            e.preventDefault();
+
+            var link = $(this).data('link');
+            $('#myModal').data('link', link).modal('show');
+        });
+
+        $('#btnYes').click(function () {
+            // handle redirect here
+            var link = $('#myModal').data('link');
+            location.href = link;
+            $('#myModal').modal('hide');
+        });
+
+    </script>
+@*<script>
+
+        // Get the modal
+        var modal = document.getElementById('uwagaModal');
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+        // Get the <span> element that closes the modal
+        var span = document.getElementById("closeModal");
+        // Get the nieBtn that closes the modal
+        var nie = document.getElementById("nieBtn");
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        // When the user clicks on (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        nie.onclick = function () {
+            modal.style.display = "none";
+        }
+           
+    </script>*@

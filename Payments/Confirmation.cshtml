@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="container" class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 box accordion">
+            <div class="box-header">
+                <div class="box-title">Potwierdzenie zapłaty</div>
+                <div class="box-accordion-button"></div>
+            </div>
+            <div class="box-container">
+                <div class="container new-section">
+                    <div style="text-align:center; line-height:30px">
+                        <text >
+                            Na wskazany w zgłoszeniu adres email została wysłana instrukcja wysyłki urządzenia do Centrum Serwisowego.
+                        </text>
+                    </div>
+                </div>
+                <hr />
+                <div class="container new-section">
+                    <div style="float:right;">
+                        <input type="submit" id="UpdateData" value="Powrót do listy zgloszeń" class="btn btn-primary" onclick="@("window.location.href='" + @Url.Action("Index", "Zgloszenia") + "'");" />
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
